@@ -7,6 +7,7 @@
 import React, {Component} from "react";
 import {Editor, RichUtils, getDefaultKeyBinding} from "draft-js";
 
+import insertDataBlock from '../insertDataBlock';
 import Toolbar from "./Toolbar";
 import Sidebar from "./Sidebar";
 import Media from "./Media";
@@ -116,6 +117,16 @@ export default class MegadraftEditor extends Component {
     return true;
   }
 
+  handleDrop() {
+    for (let index = 0; index < data.data.items.length; index++) {
+        const item = data.data.items[index]
+        item.getAsString((data) => { 
+	    this.props.onChange(insertDataBlock(this.props.editorState, JSON.parse(data)));
+        })   
+    }
+    return true
+  }
+
   setReadOnly(readOnly) {
     this.setState({readOnly});
   }
@@ -174,6 +185,7 @@ export default class MegadraftEditor extends Component {
             onTab={this.onTab}
             handleKeyCommand={this.handleKeyCommand}
             handleReturn={this.handleReturn}
+	    handleDrop={this.props.handleDrop || this.handleDrop}
             stripPastedStyles={stripPastedStyles}
             spellCheck={spellCheck}
             keyBindingFn={this.externalKeyBindings}
