@@ -117,12 +117,14 @@ export default class MegadraftEditor extends Component {
     return true;
   }
 
-  handleDrop() {
+  handleDrop(selection, data) {
     for (let index = 0; index < data.data.items.length; index++) {
         const item = data.data.items[index]
-        item.getAsString((data) => { 
-	    this.props.onChange(insertDataBlock(this.props.editorState, JSON.parse(data)));
-        })   
+        if (item.type === 'text/json') {
+          item.getAsString((data) => { 
+            this.props.onChange(insertDataBlock(this.props.editorState, JSON.parse(data)));
+          }) 
+        }  
     }
     return true
   }
@@ -185,7 +187,7 @@ export default class MegadraftEditor extends Component {
             onTab={this.onTab}
             handleKeyCommand={this.handleKeyCommand}
             handleReturn={this.handleReturn}
-	    handleDrop={this.props.handleDrop || this.handleDrop}
+	          handleDrop={this.props.handleDrop || this.handleDrop}
             stripPastedStyles={stripPastedStyles}
             spellCheck={spellCheck}
             keyBindingFn={this.externalKeyBindings}
